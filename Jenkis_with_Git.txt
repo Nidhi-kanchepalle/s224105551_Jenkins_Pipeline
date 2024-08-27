@@ -4,60 +4,70 @@ pipeline {
     stages {
         stage('Build') {
             steps {
-                // Example command to build code using Maven
-                sh 'mvn clean package'
+                echo 'Stage 1: Build'
+                echo 'Task: Compile and package the code.'
+                echo 'Tool: Maven, Gradle, or Ant'
             }
         }
         
         stage('Unit and Integration Tests') {
             steps {
-                // Example command to run tests
-                sh 'mvn test'
+                echo 'Stage 2: Unit and Integration Tests'
+                echo 'Task: Run unit tests and integration tests to validate the code.'
+                echo 'Tool: JUnit, pytest, or Selenium'
             }
         }
         
         stage('Code Analysis') {
             steps {
-                // Example command for code analysis with SonarQube
-                sh 'mvn sonar:sonar'
+                echo 'Stage 3: Code Analysis'
+                echo 'Task: Analyze code quality and adherence to standards.'
+                echo 'Tool: SonarQube'
             }
         }
         
         stage('Security Scan') {
             steps {
-                // Example command for security scan
-                sh 'dependency-check --project my-project'
+                echo 'Stage 4: Security Scan'
+                echo 'Task: Perform security scans to identify vulnerabilities.'
+                echo 'Tool: OWASP Dependency-Check or Snyk'
             }
         }
         
         stage('Deploy to Staging') {
             steps {
-                // Example command to deploy to staging
-                sh 'aws deploy push --application-name my-app --s3-location s3://my-bucket/my-app.zip'
+                echo 'Stage 5: Deploy to Staging'
+                echo 'Task: Deploy the application to a staging environment.'
+                echo 'Tool: AWS CodeDeploy or Docker'
             }
         }
         
         stage('Integration Tests on Staging') {
             steps {
-                // Example command for integration tests
-                sh 'pytest integration_tests.py'
+                echo 'Stage 6: Integration Tests on Staging'
+                echo 'Task: Run integration tests in the staging environment.'
+                echo 'Tool: JUnit, pytest, or custom scripts'
             }
         }
         
         stage('Deploy to Production') {
             steps {
-                // Example command to deploy to production
-                sh 'aws deploy push --application-name my-app-prod --s3-location s3://my-bucket/my-app-prod.zip'
+                echo 'Stage 7: Deploy to Production'
+                echo 'Task: Deploy the application to a production environment.'
+                echo 'Tool: AWS CodeDeploy or Docker'
             }
         }
     }
     
     post {
+        always {
+            echo 'Pipeline completed. Sending notification emails.'
+        }
         success {
             emailext(
                 to: 's224105551@deakin.edu.au',
                 subject: 'Build Success',
-                body: 'The build was successful!',
+                body: 'The pipeline has completed successfully.',
                 attachLog: true
             )
         }
@@ -65,9 +75,10 @@ pipeline {
             emailext(
                 to: 's224105551@deakin.edu.au',
                 subject: 'Build Failure',
-                body: 'The build failed. Please check the logs.',
+                body: 'The pipeline has failed. Please check the logs.',
                 attachLog: true
             )
         }
     }
 }
+
