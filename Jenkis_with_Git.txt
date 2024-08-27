@@ -4,75 +4,77 @@ pipeline {
     stages {
         stage('Build') {
             steps {
-                echo 'Stage 1: Build'
-                echo 'Task: Compile and package the code.'
-                echo 'Tool: Maven, Gradle, or Ant'
+                echo 'Building the application...'
+                echo 'Tool: Maven or Gradle for build automation'
             }
         }
         
         stage('Unit and Integration Tests') {
             steps {
-                echo 'Stage 2: Unit and Integration Tests'
-                echo 'Task: Run unit tests and integration tests to validate the code.'
-                echo 'Tool: JUnit, pytest, or Selenium'
+                echo 'Running Unit and Integration Tests...'
+                echo 'Tools: JUnit for unit testing, TestNG for integration testing'
+            }
+            post {
+                always {
+                    emailext(
+                        subject: "Build ${currentBuild.fullDisplayName} - Test Stage Result",
+                        body: "The Test stage has ${currentBuild.result}. Please find the attached logs.",
+                        attachLog: true,
+                        to: 'nidhi.kanchepalle100@gmail.com'
+                    )
+                }
             }
         }
         
         stage('Code Analysis') {
             steps {
-                echo 'Stage 3: Code Analysis'
-                echo 'Task: Analyze code quality and adherence to standards.'
-                echo 'Tool: SonarQube'
+                echo 'Performing Code Analysis...'
+                echo 'Tool: SonarQube for code quality analysis'
             }
         }
         
         stage('Security Scan') {
             steps {
-                echo 'Stage 4: Security Scan'
-                echo 'Task: Perform security scans to identify vulnerabilities.'
-                echo 'Tool: OWASP Dependency-Check or Snyk'
+                echo 'Performing Security Scan...'
+                echo 'Tool: OWASP Dependency-Check for security vulnerability scanning'
+            }
+            post {
+                always {
+                    emailext(
+                        subject: "Build ${currentBuild.fullDisplayName} - Security Scan Result",
+                        body: "The Security Scan stage has ${currentBuild.result}. Please find the attached logs.",
+                        attachLog: true,
+                        to: 'nidhi.kanchepalle100@gmail.com'
+                    )
+                }
             }
         }
         
         stage('Deploy to Staging') {
             steps {
-                echo 'Stage 5: Deploy to Staging'
-                echo 'Task: Deploy the application to a staging environment.'
-                echo 'Tool: AWS CodeDeploy or Docker'
+                echo 'Deploying to Staging Environment...'
+                echo 'Tool: AWS CLI or Jenkins AWS plugin for deployment to EC2 instance'
             }
         }
         
         stage('Integration Tests on Staging') {
             steps {
-                echo 'Stage 6: Integration Tests on Staging'
-                echo 'Task: Run integration tests in the staging environment.'
-                echo 'Tool: JUnit, pytest, or custom scripts'
+                echo 'Running Integration Tests on Staging...'
+                echo 'Tool: Selenium for web application testing in staging environment'
             }
         }
         
         stage('Deploy to Production') {
             steps {
-                echo 'Stage 7: Deploy to Production'
-                echo 'Task: Deploy the application to a production environment.'
-                echo 'Tool: AWS CodeDeploy or Docker'
+                echo 'Deploying to Production Environment...'
+                echo 'Tool: AWS CLI or Jenkins AWS plugin for deployment to production server'
             }
         }
     }
     
     post {
         always {
-            echo 'Pipeline completed. Sending notification emails.'
-        }
-        success {
-                mail to: 'nidhi.kanchepalle100@gmail.com',
-                subject: 'Build Success',
-                body: 'The pipeline has completed successfully.'
-        }
-        failure {
-                mail to: 'nidhi.kanchepalle100@gmail.com',
-                subject: 'Build Failure',
-                body: 'The pipeline has failed. Please check the logs.'
+            echo "Pipeline completed. Final status: ${currentBuild.result}"
         }
     }
 }
-
