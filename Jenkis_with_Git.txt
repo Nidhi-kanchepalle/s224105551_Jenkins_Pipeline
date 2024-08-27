@@ -16,7 +16,7 @@ pipeline {
             }
             post {
                 always {
-                    emailext(
+                    mail(
                         subject: "Build ${currentBuild.fullDisplayName} - Test Stage Result",
                         body: "The Test stage has ${currentBuild.result}. Please find the attached logs.",
                         attachLog: true,
@@ -40,7 +40,7 @@ pipeline {
             }
             post {
                 always {
-                    emailext(
+                    mail(
                         subject: "Build ${currentBuild.fullDisplayName} - Security Scan Result",
                         body: "The Security Scan stage has ${currentBuild.result}. Please find the attached logs.",
                         attachLog: true,
