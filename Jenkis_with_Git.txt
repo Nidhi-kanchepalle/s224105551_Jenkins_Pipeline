@@ -66,14 +66,12 @@ pipeline {
         success {
                 mail to: 'nidhi.kanchepalle100@gmail.com',
                 subject: 'Build Success',
-                body: 'The pipeline has completed successfully.',
-                attachLog: true
+                body: 'The pipeline has completed successfully.'
         }
         failure {
                 mail to: 'nidhi.kanchepalle100@gmail.com',
                 subject: 'Build Failure',
-                body: 'The pipeline has failed. Please check the logs.',
-                attachLog: true
+                body: 'The pipeline has failed. Please check the logs.'
         }
     }
 }
