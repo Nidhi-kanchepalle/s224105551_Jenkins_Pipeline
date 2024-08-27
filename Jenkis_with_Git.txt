@@ -1,0 +1,73 @@
+pipeline {
+    agent any
+    
+    stages {
+        stage('Build') {
+            steps {
+                // Example command to build code using Maven
+                sh 'mvn clean package'
+            }
+        }
+        
+        stage('Unit and Integration Tests') {
+            steps {
+                // Example command to run tests
+                sh 'mvn test'
+            }
+        }
+        
+        stage('Code Analysis') {
+            steps {
+                // Example command for code analysis with SonarQube
+                sh 'mvn sonar:sonar'
+            }
+        }
+        
+        stage('Security Scan') {
+            steps {
+                // Example command for security scan
+                sh 'dependency-check --project my-project'
+            }
+        }
+        
+        stage('Deploy to Staging') {
+            steps {
+                // Example command to deploy to staging
+                sh 'aws deploy push --application-name my-app --s3-location s3://my-bucket/my-app.zip'
+            }
+        }
+        
+        stage('Integration Tests on Staging') {
+            steps {
+                // Example command for integration tests
+                sh 'pytest integration_tests.py'
+            }
+        }
+        
+        stage('Deploy to Production') {
+            steps {
+                // Example command to deploy to production
+                sh 'aws deploy push --application-name my-app-prod --s3-location s3://my-bucket/my-app-prod.zip'
+            }
+        }
+    }
+    
+    post {
+        success {
+            emailext(
+                to: 's224105551@deakin.edu.au',
+                subject: 'Build Success',
+                body: 'The build was successful!',
+                attachLog: true
+            )
+        }
+        failure {
+            emailext(
+                to: 's224105551@deakin.edu.au',
+                subject: 'Build Failure',
+                body: 'The build failed. Please check the logs.',
+                attachLog: true
+            )
+        }
+    }
+}
