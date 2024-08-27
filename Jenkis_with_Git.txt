@@ -16,12 +16,16 @@ pipeline {
             }
             post {
                 always {
-                    mail(
-                        subject: "Build ${currentBuild.fullDisplayName} - Test Stage Result",
-                        body: "The Test stage has ${currentBuild.result}. Please find the attached logs.",
-                        attachLog: true,
-                        to: 'nidhi.kanchepalle100@gmail.com'
-                    )
+                    script {
+                        def logFile = "test-stage-log-${env.BUILD_NUMBER}.txt"
+                        writeFile file: logFile, text: currentBuild.rawBuild.getLog(10000).join('\n')
+                        mail(
+                            subject: "Build ${currentBuild.fullDisplayName} - Test Stage Result",
+                            body: "The Test stage has ${currentBuild.result}. Please find the attached logs.",
+                            to: 'nidhi.kanchepalle100@gmail.com',
+                            attachmentsPattern: logFile
+                        )
+                    }
                 }
             }
         }
@@ -40,12 +44,16 @@ pipeline {
             }
             post {
                 always {
-                    mail(
-                        subject: "Build ${currentBuild.fullDisplayName} - Security Scan Result",
-                        body: "The Security Scan stage has ${currentBuild.result}. Please find the attached logs.",
-                        attachLog: true,
-                        to: 'nidhi.kanchepalle100@gmail.com'
-                    )
+                    script {
+                        def logFile = "security-scan-log-${env.BUILD_NUMBER}.txt"
+                        writeFile file: logFile, text: currentBuild.rawBuild.getLog(10000).join('\n')
+                        mail(
+                            subject: "Build ${currentBuild.fullDisplayName} - Security Scan Result",
+                            body: "The Security Scan stage has ${currentBuild.result}. Please find the attached logs.",
+                            to: 'nidhi.kanchepalle100@gmail.com',
+                            attachmentsPattern: logFile
+                        )
+                    }
                 }
             }
         }
@@ -78,3 +86,4 @@ pipeline {
         }
     }
 }
+
