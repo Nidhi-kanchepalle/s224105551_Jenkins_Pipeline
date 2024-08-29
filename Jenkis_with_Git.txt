@@ -18,23 +18,17 @@ pipeline {
                 echo 'Tools: JUnit for unit tests, Selenium for integration tests'
             }
             post {
-                success {
-                    emailext (
-                        subject: "SUCCESS: Unit and Integration Tests - Build ${env.BUILD_NUMBER} - ${env.JOB_NAME}",
-                        body: "Unit and Integration Tests stage completed successfully.\n\nCheck console output at ${env.BUILD_URL} to view the results.",
+                always {
+                    // Send email with logs attached after test stage
+                    emailext(
+                        subject: "Unit and Integration Tests: ${currentBuild.currentResult}",
+                        body: "The Unit and Integration Tests stage has completed with status: ${currentBuild.currentResult}.",
                         to: 'nidhi.kanchepalle100@gmail.com',
-                        attachmentsPattern: '**/test-results/**/*.xml'
-                    )
-                }
-                failure {
-                    emailext (
-                        subject: "FAILURE: Unit and Integration Tests - Build ${env.BUILD_NUMBER} - ${env.JOB_NAME}",
-                        body: "Unit and Integration Tests stage failed.\n\nCheck console output at ${env.BUILD_URL} to view the results.",
-                        to: 'nidhi.kanchepalle100@gmail.com',
-                        attachmentsPattern: '**/test-results/**/*.xml'
+                        attachLog: true
                     )
                 }
             }
+   
         }
         stage('Code Analysis') {
             steps {
@@ -50,20 +44,13 @@ pipeline {
                 echo 'Tool: OWASP Dependency-Check'
             }
             post {
-                success {
-                    emailext (
-                        subject: "SUCCESS: Security Scan - Build ${env.BUILD_NUMBER} - ${env.JOB_NAME}",
-                        body: "Security Scan stage completed successfully.\n\nCheck console output at ${env.BUILD_URL} to view the results.",
+                always {
+                    // Send email with logs attached after test stage
+                    emailext(
+                        subject: "Security Scan: ${currentBuild.currentResult}",
+                        body: "The Security Scan stage has completed with status: ${currentBuild.currentResult}.",
                         to: 'nidhi.kanchepalle100@gmail.com',
-                        attachmentsPattern: '**/security-scan/**/*.xml'
-                    )
-                }
-                failure {
-                    emailext (
-                        subject: "FAILURE: Security Scan - Build ${env.BUILD_NUMBER} - ${env.JOB_NAME}",
-                        body: "Security Scan stage failed.\n\nCheck console output at ${env.BUILD_URL} to view the results.",
-                        to: 'nidhi.kanchepalle100@gmail.com',
-                        attachmentsPattern: '**/security-scan/**/*.xml'
+                        attachLog: true
                     )
                 }
             }
