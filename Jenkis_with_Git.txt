@@ -1,89 +1,53 @@
 pipeline {
     agent any
-    
+    triggers {
+        pollSCM('H/5 * * * *')  // Polls for changes every 5 minutes
+    }
     stages {
         stage('Build') {
             steps {
-                echo 'Building the application...'
-                echo 'Tool: Maven or Gradle for build automation'
+                echo 'Building...'
             }
         }
-        
         stage('Unit and Integration Tests') {
             steps {
-                echo 'Running Unit and Integration Tests...'
-                echo 'Tools: JUnit for unit testing, TestNG for integration testing'
-            }
-            post {
-                always {
-                    script {
-                        def logFile = "test-stage-log-${env.BUILD_NUMBER}.txt"
-                        writeFile file: logFile, text: currentBuild.rawBuild.getLog(10000).join('\n')
-                        mail(
-                            subject: "Build ${currentBuild.fullDisplayName} - Test Stage Result",
-                            body: "The Test stage has ${currentBuild.result}. Please find the attached logs.",
-                            to: 'nidhi.kanchepalle100@gmail.com',
-                            attachmentsPattern: logFile
-                        )
-                    }
-                }
+                echo 'Running tests...'
             }
         }
-        
         stage('Code Analysis') {
             steps {
-                echo 'Performing Code Analysis...'
-                echo 'Tool: SonarQube for code quality analysis'
+                echo 'Analyzing code...'
             }
         }
-        
         stage('Security Scan') {
             steps {
-                echo 'Performing Security Scan...'
-                echo 'Tool: OWASP Dependency-Check for security vulnerability scanning'
-            }
-            post {
-                always {
-                    script {
-                        def logFile = "security-scan-log-${env.BUILD_NUMBER}.txt"
-                        writeFile file: logFile, text: currentBuild.rawBuild.getLog(10000).join('\n')
-                        mail(
-                            subject: "Build ${currentBuild.fullDisplayName} - Security Scan Result",
-                            body: "The Security Scan stage has ${currentBuild.result}. Please find the attached logs.",
-                            to: 'nidhi.kanchepalle100@gmail.com',
-                            attachmentsPattern: logFile
-                        )
-                    }
-                }
+                echo 'Scanning for security vulnerabilities...'
             }
         }
-        
         stage('Deploy to Staging') {
             steps {
-                echo 'Deploying to Staging Environment...'
-                echo 'Tool: AWS CLI or Jenkins AWS plugin for deployment to EC2 instance'
+                echo 'Deploying to staging...'
             }
         }
-        
         stage('Integration Tests on Staging') {
             steps {
-                echo 'Running Integration Tests on Staging...'
-                echo 'Tool: Selenium for web application testing in staging environment'
+                echo 'Running integration tests on staging...'
             }
         }
-        
         stage('Deploy to Production') {
             steps {
-                echo 'Deploying to Production Environment...'
-                echo 'Tool: AWS CLI or Jenkins AWS plugin for deployment to production server'
+                echo 'Deploying to production...'
             }
         }
     }
-    
     post {
         always {
-            echo "Pipeline completed. Final status: ${currentBuild.result}"
+            emailext (
+                subject: "Pipeline ${currentBuild.currentResult}: Build ${env.BUILD_NUMBER} - ${env.JOB_NAME}",
+                body: "Pipeline ${currentBuild.currentResult}: Build ${env.BUILD_NUMBER} - ${env.JOB_NAME}\n\nCheck console output at ${env.BUILD_URL} to view the results.",
+                to: 'example@example.com',
+                attachmentsPattern: '**/test-results/**/*.xml, **/security-scan/**/*.xml'
+            )
         }
     }
 }
-
