@@ -6,48 +6,88 @@ pipeline {
     stages {
         stage('Build') {
             steps {
-                echo 'Building...'
+                echo 'Stage 1: Build'
+                echo 'Task: Compile and package the code.'
+                echo 'Tool: Maven'
             }
         }
         stage('Unit and Integration Tests') {
             steps {
-                echo 'Running tests...'
+                echo 'Stage 2: Unit and Integration Tests'
+                echo 'Task: Run unit tests to verify the functionality of individual components and integration tests to ensure different components work together.'
+                echo 'Tools: JUnit for unit tests, Selenium for integration tests'
+            }
+            post {
+                success {
+                    emailext (
+                        subject: "SUCCESS: Unit and Integration Tests - Build ${env.BUILD_NUMBER} - ${env.JOB_NAME}",
+                        body: "Unit and Integration Tests stage completed successfully.\n\nCheck console output at ${env.BUILD_URL} to view the results.",
+                        to: 'nidhi.kanchepalle100@gmail.com',
+                        attachmentsPattern: '**/test-results/**/*.xml'
+                    )
+                }
+                failure {
+                    emailext (
+                        subject: "FAILURE: Unit and Integration Tests - Build ${env.BUILD_NUMBER} - ${env.JOB_NAME}",
+                        body: "Unit and Integration Tests stage failed.\n\nCheck console output at ${env.BUILD_URL} to view the results.",
+                        to: 'nidhi.kanchepalle100@gmail.com',
+                        attachmentsPattern: '**/test-results/**/*.xml'
+                    )
+                }
             }
         }
         stage('Code Analysis') {
             steps {
-                echo 'Analyzing code...'
+                echo 'Stage 3: Code Analysis'
+                echo 'Task: Analyze the code to ensure it meets industry standards and to identify any issues.'
+                echo 'Tool: SonarQube'
             }
         }
         stage('Security Scan') {
             steps {
-                echo 'Scanning for security vulnerabilities...'
+                echo 'Stage 4: Security Scan'
+                echo 'Task: Perform a security scan to identify vulnerabilities in the code.'
+                echo 'Tool: OWASP Dependency-Check'
+            }
+            post {
+                success {
+                    emailext (
+                        subject: "SUCCESS: Security Scan - Build ${env.BUILD_NUMBER} - ${env.JOB_NAME}",
+                        body: "Security Scan stage completed successfully.\n\nCheck console output at ${env.BUILD_URL} to view the results.",
+                        to: 'nidhi.kanchepalle100@gmail.com',
+                        attachmentsPattern: '**/security-scan/**/*.xml'
+                    )
+                }
+                failure {
+                    emailext (
+                        subject: "FAILURE: Security Scan - Build ${env.BUILD_NUMBER} - ${env.JOB_NAME}",
+                        body: "Security Scan stage failed.\n\nCheck console output at ${env.BUILD_URL} to view the results.",
+                        to: 'nidhi.kanchepalle100@gmail.com',
+                        attachmentsPattern: '**/security-scan/**/*.xml'
+                    )
+                }
             }
         }
         stage('Deploy to Staging') {
             steps {
-                echo 'Deploying to staging...'
+                echo 'Stage 5: Deploy to Staging'
+                echo 'Task: Deploy the application to a staging server for further testing.'
+                echo 'Tool: AWS CLI'
             }
         }
         stage('Integration Tests on Staging') {
             steps {
-                echo 'Running integration tests on staging...'
+                echo 'Stage 6: Integration Tests on Staging'
+                echo 'Task: Run integration tests in the staging environment to ensure the application functions as expected in a production-like setting.'
+                echo 'Tool: Selenium'
             }
         }
         stage('Deploy to Production') {
             steps {
-                echo 'Deploying to production...'
+                echo 'Stage 7: Deploy to Production'
+                echo 'Task: Deploy the application to the production server.'
+                echo 'Tool: AWS CLI'
             }
-        }
-    }
-    post {
-        always {
-            emailext (
-                subject: "Pipeline ${currentBuild.currentResult}: Build ${env.BUILD_NUMBER} - ${env.JOB_NAME}",
-                body: "Pipeline ${currentBuild.currentResult}: Build ${env.BUILD_NUMBER} - ${env.JOB_NAME}\n\nCheck console output at ${env.BUILD_URL} to view the results.",
-                to: 'example@example.com',
-                attachmentsPattern: '**/test-results/**/*.xml, **/security-scan/**/*.xml'
-            )
         }
     }
 }
