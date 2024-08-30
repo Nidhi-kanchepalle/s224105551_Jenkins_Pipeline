@@ -59,14 +59,14 @@ pipeline {
             steps {
                 echo 'Stage 5: Deploy to Staging'
                 echo 'Task: Deploy the application to a staging server for further testing.'
-                echo 'Tool: AWS CLI'
+                echo 'Tool: AWS EC2'
             }
         }
         stage('Integration Tests on Staging') {
             steps {
                 echo 'Stage 6: Integration Tests on Staging'
                 echo 'Task: Run integration tests in the staging environment to ensure the application functions as expected in a production-like setting.'
-                echo 'Tool: Selenium'
+                echo 'Tool: Postman'
             }
         }
         stage('Deploy to Production') {
