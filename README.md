@@ -43,8 +43,7 @@ Description:
 In this stage, the application is deployed to a staging environment that mimics the production environment. This allows for final testing in an environment similar to production before going live.
 
 Tool:
-SCP (Secure Copy Protocol): Used to securely transfer files from Jenkins to a staging server
-
+AWS EC2 (Amazon Elastic Compute Cloud): It is a core component of Amazon Web Services that provides scalable computing capacity in the cloud. It allows you to launch and manage virtual servers, called instances, to run your applications.
 
 **6. Integration Tests on Staging**
 Description:
@@ -59,4 +58,4 @@ Description:
 The final stage deploys the application to the production environment. This is where the application becomes available to end-users. It should be done with caution and ideally after successful tests in the staging environment
 
 Tool:
-Docker: Can be used for containerizing applications and managing deployments in production environments.
+AWS CLI: Used to manage AWS resources and deploy artifacts to an EC2 instance
